@@ -29,7 +29,6 @@ import java.util.Scanner;
 
 public class B_LongDivComSubSeq {
 
-
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = B_LongDivComSubSeq.class.getResourceAsStream("dataB.txt");
         B_LongDivComSubSeq instance = new B_LongDivComSubSeq();
@@ -38,22 +37,33 @@ public class B_LongDivComSubSeq {
     }
 
     int getDivSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
+        // общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
+
+        // dp[i] — длина наибольшей кратной подпоследовательности, заканчивающейся в i
+        int[] dp = new int[n];
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1; // каждый элемент сам по себе — подпоследовательность длины 1
+            for (int j = 0; j < i; j++) {
+                if (m[i] % m[j] == 0 && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                }
+            }
+        }
+
+        // находим максимум среди всех dp[i]
         int result = 0;
+        for (int len : dp) {
+            if (len > result) {
+                result = len;
+            }
+        }
 
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
-
 }

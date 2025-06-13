@@ -36,22 +36,71 @@ public class B_MergeSort {
         Scanner scanner = new Scanner(stream);
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
-        //размер массива
         int n = scanner.nextInt();
-        //сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
-            System.out.println(a[i]);
         }
 
-        // тут ваше решение (реализуйте сортировку слиянием)
-        // https://ru.wikipedia.org/wiki/Сортировка_слиянием
-
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        mergeSort(a, 0, n - 1);
         return a;
     }
 
+    // Сортировка слиянием
+    void mergeSort(int[] array, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
 
+            // сортируем левую и правую половину
+            mergeSort(array, left, mid);
+            mergeSort(array, mid + 1, right);
+
+            // сливаем отсортированные половины
+            merge(array, left, mid, right);
+        }
+    }
+
+    // Слияние двух отсортированных подмассивов
+    void merge(int[] array, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+
+        for (int i = 0; i < n1; ++i)
+            L[i] = array[left + i];
+        for (int j = 0; j < n2; ++j)
+            R[j] = array[mid + 1 + j];
+
+        int i = 0, j = 0;
+        int k = left;
+
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                array[k] = L[i];
+                i++;
+            } else {
+                array[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i < n1) {
+            array[k] = L[i];
+            i++;
+            k++;
+        }
+
+        while (j < n2) {
+            array[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 }
+
+
+

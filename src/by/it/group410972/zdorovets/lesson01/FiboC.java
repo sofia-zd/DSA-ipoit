@@ -1,11 +1,5 @@
 package by.it.group410972.zdorovets.lesson01;
 
-/*
- * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
- * необходимо найти остаток от деления n-го числа Фибоначчи на m
- * время расчета должно быть не более 2 секунд
- */
-
 public class FiboC {
 
     private long startTime = System.currentTimeMillis();
@@ -22,11 +16,24 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
-        return -1L;
+        // Шаг 1: Найдём период Пизано
+        int[] pisano = new int[m * 6]; // максимум длины периода — 6*m
+        pisano[0] = 0;
+        pisano[1] = 1;
+
+        int periodLength = 0;
+        for (int i = 2; i < pisano.length; i++) {
+            pisano[i] = (pisano[i - 1] + pisano[i - 2]) % m;
+            if (pisano[i - 1] == 0 && pisano[i] == 1) {
+                periodLength = i - 1;
+                break;
+            }
+        }
+
+        // Шаг 2: Найдём n % periodLength
+        int remainder = (int) (n % periodLength);
+
+        // Шаг 3: Вернём остаток от соответствующего числа Фибоначчи
+        return pisano[remainder];
     }
-
-
 }
-

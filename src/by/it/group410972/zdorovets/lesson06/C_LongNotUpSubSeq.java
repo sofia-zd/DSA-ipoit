@@ -2,6 +2,8 @@ package by.it.group410972.zdorovets.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /*
@@ -34,7 +36,6 @@ import java.util.Scanner;
     1 3 4 5
 */
 
-
 public class C_LongNotUpSubSeq {
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -55,12 +56,40 @@ public class C_LongNotUpSubSeq {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int[] dp = new int[n];        // длина наибольшей невозрастающей подпоследовательности до i
+        int[] prev = new int[n];      // хранит предыдущий индекс в цепочке
+        int maxLength = 1;
+        int lastIndex = 0;
+
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+            prev[i] = -1;
+            for (int j = 0; j < i; j++) {
+                if (m[j] >= m[i] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j;
+                }
+            }
+            if (dp[i] > maxLength) {
+                maxLength = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        List<Integer> indices = new ArrayList<>();
+        while (lastIndex != -1) {
+            indices.add(0, lastIndex + 1); // индекс начинается с 1
+            lastIndex = prev[lastIndex];
+        }
+
+        System.out.println(maxLength);
+        for (int index : indices) {
+            System.out.print(index + " ");
+        }
+        System.out.println();
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return maxLength;
     }
-
 }

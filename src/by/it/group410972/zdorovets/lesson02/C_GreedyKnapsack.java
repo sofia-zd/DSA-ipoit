@@ -1,4 +1,5 @@
 package by.it.group410972.zdorovets.lesson02;
+
 /*
 Даны
 1) объем рюкзака 4
@@ -12,10 +13,10 @@ package by.it.group410972.zdorovets.lesson02;
 Необходимо собрать наиболее дорогой вариант рюкзака для этого объема
 Предметы можно резать на кусочки (т.е. алгоритм будет жадным)
  */
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
@@ -44,12 +45,24 @@ public class C_GreedyKnapsack {
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
+
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
 
-        //ваше решение.
+        Arrays.sort(items); // сортировка по убыванию ценности (стоимость/вес)
 
+        for (Item item : items) {
+            if (W == 0) break;
+            if (item.weight <= W) {
+                result += item.cost;
+                W -= item.weight;
+            } else {
+                double fraction = (double) W / item.weight;
+                result += item.cost * fraction;
+                W = 0;
+            }
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
@@ -67,17 +80,17 @@ public class C_GreedyKnapsack {
         @Override
         public String toString() {
             return "Item{" +
-                   "cost=" + cost +
-                   ", weight=" + weight +
-                   '}';
+                    "cost=" + cost +
+                    ", weight=" + weight +
+                    '}';
         }
 
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-
-
-            return 0;
+            // сортировка по убыванию ценности (стоимость на 1 кг)
+            double thisRatio = (double) this.cost / this.weight;
+            double otherRatio = (double) o.cost / o.weight;
+            return -Double.compare(thisRatio, otherRatio);
         }
     }
 }

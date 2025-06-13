@@ -28,7 +28,6 @@ import java.util.Scanner;
 
 */
 
-
 public class C_QSortOptimized {
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -64,6 +63,19 @@ public class C_QSortOptimized {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        quickSort(segments, 0, segments.length - 1); // сортировка отрезков
+
+        for (int i = 0; i < m; i++) {
+            int point = points[i];
+            int left = binarySearch(segments, point);
+            int count = 0;
+            for (int j = left; j < n && segments[j].start <= point; j++) {
+                if (segments[j].stop >= point) {
+                    count++;
+                }
+            }
+            result[i] = count;
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
@@ -81,9 +93,52 @@ public class C_QSortOptimized {
 
         @Override
         public int compareTo(Object o) {
-            //подумайте, что должен возвращать компаратор отрезков
-            return 0;
+            Segment other = (Segment) o;
+            if (this.start != other.start)
+                return Integer.compare(this.start, other.start);
+            return Integer.compare(this.stop, other.stop);
         }
     }
 
+    // Быстрая сортировка с 3-разбиением и устранением хвостовой рекурсии
+    void quickSort(Segment[] a, int left, int right) {
+        while (left < right) {
+            int lt = left, gt = right;
+            Segment pivot = a[left];
+            int i = left + 1;
+            while (i <= gt) {
+                int cmp = a[i].compareTo(pivot);
+                if (cmp < 0) swap(a, lt++, i++);
+                else if (cmp > 0) swap(a, i, gt--);
+                else i++;
+            }
+            if (lt - left < right - gt) {
+                quickSort(a, left, lt - 1);
+                left = gt + 1;
+            } else {
+                quickSort(a, gt + 1, right);
+                right = lt - 1;
+            }
+        }
+    }
+
+    void swap(Segment[] a, int i, int j) {
+        Segment temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    // Бинарный поиск первого отрезка, где start > point
+    int binarySearch(Segment[] a, int point) {
+        int left = 0, right = a.length;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            if (a[mid].start <= point) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left - 1;
+    }
 }

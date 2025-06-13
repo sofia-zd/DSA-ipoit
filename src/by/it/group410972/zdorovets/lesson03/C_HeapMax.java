@@ -74,24 +74,64 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
-
+        int siftUp(int i) {
+            while (i > 0) {
+                int parent = (i - 1) / 2;
+                if (heap.get(i) > heap.get(parent)) {
+                    swap(i, parent);
+                    i = parent;
+                } else break;
+            }
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
+        int siftDown(int i) {
+            int size = heap.size();
+            while (2 * i + 1 < size) {
+                int left = 2 * i + 1;
+                int right = 2 * i + 2;
+                int largest = i;
 
+                if (left < size && heap.get(left) > heap.get(largest)) {
+                    largest = left;
+                }
+
+                if (right < size && heap.get(right) > heap.get(largest)) {
+                    largest = right;
+                }
+
+                if (largest == i)
+                    break;
+
+                swap(i, largest);
+                i = largest;
+            }
             return i;
         }
 
-        void insert(Long value) { //вставка
+        void insert(Long value) {
+            heap.add(value);
+            siftUp(heap.size() - 1);
         }
 
-        Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
-
+        Long extractMax() {
+            if (heap.isEmpty()) return null;
+            Long result = heap.get(0);
+            Long last = heap.remove(heap.size() - 1);
+            if (!heap.isEmpty()) {
+                heap.set(0, last);
+                siftDown(0);
+            }
+            System.out.println(result); // <<< ВАЖНО
             return result;
         }
+
+        private void swap(int i, int j) {
+            Long temp = heap.get(i);
+            heap.set(i, heap.get(j));
+            heap.set(j, temp);
+        }
+    }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     }
 
@@ -99,4 +139,3 @@ public class C_HeapMax {
     // Свои собственные кучи нужны довольно редко.
     // В реальном приложении все иначе. Изучите и используйте коллекции
     // TreeSet, TreeMap, PriorityQueue и т.д. с нужным CompareTo() для объекта внутри.
-}

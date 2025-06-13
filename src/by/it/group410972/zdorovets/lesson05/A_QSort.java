@@ -3,6 +3,7 @@ package by.it.group410972.zdorovets.lesson05;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Видеорегистраторы и площадь.
@@ -46,52 +47,75 @@ public class A_QSort {
     }
 
     int[] getAccessory(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+        // Подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //число отрезков отсортированного массива
+
+        // Число отрезков
         int n = scanner.nextInt();
         Segment[] segments = new Segment[n];
-        //число точек
+
+        // Число точек
         int m = scanner.nextInt();
         int[] points = new int[m];
         int[] result = new int[m];
 
-        //читаем сами отрезки
+        // Чтение отрезков
         for (int i = 0; i < n; i++) {
-            //читаем начало и конец каждого отрезка
-            segments[i] = new Segment(scanner.nextInt(), scanner.nextInt());
+            int start = scanner.nextInt();
+            int stop = scanner.nextInt();
+            segments[i] = new Segment(start, stop);
         }
-        //читаем точки
+
+        // Чтение точек
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        Arrays.sort(segments); // сортируем отрезки по началу
 
+        for (int i = 0; i < m; i++) {
+            int point = points[i];
+            int count = 0;
+            for (Segment segment : segments) {
+                if (segment.start > point) {
+                    break;
+                }
+                if (segment.stop >= point) {
+                    count++;
+                }
+            }
+            result[i] = count;
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+
         return result;
     }
 
-    //отрезок
-    private class Segment implements Comparable<Segment> {
+    // Вынеси класс Segment наружу — в тот же файл, но вне метода
+    class Segment implements Comparable<Segment> {
         int start;
         int stop;
 
         Segment(int start, int stop) {
-            this.start = start;
-            this.stop = stop;
-            //тут вообще-то лучше доделать конструктор на случай если
-            //концы отрезков придут в обратном порядке
+            if (start <= stop) {
+                this.start = start;
+                this.stop = stop;
+            } else {
+                this.start = stop;
+                this.stop = start;
+            }
         }
 
         @Override
         public int compareTo(Segment o) {
-            //подумайте, что должен возвращать компаратор отрезков
-
-            return 0;
+            if (this.start != o.start) {
+                return Integer.compare(this.start, o.start);
+            } else {
+                return Integer.compare(this.stop, o.stop);
+            }
         }
     }
-
 }
+
+

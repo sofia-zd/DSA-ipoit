@@ -51,10 +51,69 @@ public class C_EditDist {
     String getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
+        int n = one.length();
+        int m = two.length();
 
-        String result = "";
+        int[][] dp = new int[n + 1][m + 1];
+        char[][] op = new char[n + 1][m + 1];
+
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = i;
+            op[i][0] = '-';
+        }
+
+        for (int j = 0; j <= m; j++) {
+            dp[0][j] = j;
+            op[0][j] = '+';
+        }
+
+        op[0][0] = '#';
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
+
+                int del = dp[i - 1][j] + 1;
+                int ins = dp[i][j - 1] + 1;
+                int rep = dp[i - 1][j - 1] + cost;
+
+                dp[i][j] = Math.min(Math.min(del, ins), rep);
+
+                if (dp[i][j] == rep) {
+                    op[i][j] = (cost == 0) ? '#' : '~';
+                } else if (dp[i][j] == del) {
+                    op[i][j] = '-';
+                } else {
+                    op[i][j] = '+';
+                }
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        int i = n, j = m;
+
+        while (i > 0 || j > 0) {
+            char operation = op[i][j];
+            if (operation == '#') {
+                result.insert(0, "#,");
+                i--;
+                j--;
+            } else if (operation == '~') {
+                result.insert(0, "~" + two.charAt(j - 1) + ",");
+                i--;
+                j--;
+            } else if (operation == '+') {
+                result.insert(0, "+" + two.charAt(j - 1) + ",");
+                j--;
+            } else {
+                result.insert(0, "-" + one.charAt(i - 1) + ",");
+                i--;
+            }
+        }
+
+        return result.toString();
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
     }
 
 
